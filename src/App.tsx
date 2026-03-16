@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Product } from './shared/types';
+import { productService } from './shared/api/productService';
 import { Header } from './widgets/header/ui/Header';
 import { Hero } from './widgets/hero/ui/Hero';
 import { ProductGrid } from './widgets/product-grid/ui/ProductGrid';
