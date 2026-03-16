@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-orange: #f48c25;
+  --color-brand-green: #1bde7a;
+  --color-brand-green-hover: #14b865;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Poppins', system-ui, sans-serif;
+}
+
+@layer base {
+  html, body {
+    @apply antialiased bg-gray-50 text-gray-900;
+  }
+}
