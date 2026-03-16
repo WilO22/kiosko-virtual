@@ -1,6 +1,7 @@
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/entities/cart/model/store';
 import { Button } from '@/shared/ui/Button';
+import { generateWhatsAppLink } from '@/features/checkout/api/whatsapp';
 
 export function CartDrawer() {
   const { 
@@ -101,9 +102,16 @@ export function CartDrawer() {
               <span className="text-2xl font-bold text-gray-900">S/ {totalPrice.toFixed(2)}</span>
             </div>
             
-            <Button fullWidth size="lg">
-              Continuar al Checkout
-            </Button>
+            <a 
+              href={generateWhatsAppLink(items, totalPrice)} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block w-full"
+            >
+              <Button fullWidth variant="whatsapp" size="lg">
+                Enviar pedido por WhatsApp
+              </Button>
+            </a>
             
             <button 
               onClick={clearCart}
