@@ -1,14 +1,16 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   variant?: 'primary' | 'secondary' | 'whatsapp';
+  size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
 }
 
 export function Button({ 
   children, 
-  variant = 'primary', 
+  variant = 'primary',
+  size = 'md', 
   fullWidth = false, 
   className = '', 
   ...props 
@@ -21,12 +23,17 @@ export function Button({
     whatsapp: "bg-brand-green text-white hover:bg-brand-green-hover",
   };
   
+  const sizes = {
+    sm: 'px-4 py-2 text-sm',
+    md: 'px-6 py-3 text-base',
+    lg: 'px-8 py-4 text-lg'
+  };
+
   const widthClass = fullWidth ? "w-full" : "";
-  const pxClass = "px-6 py-3";
 
   return (
     <button 
-      className={`${baseStyles} ${variants[variant]} ${widthClass} ${pxClass} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}
       {...props}
     >
       {children}
