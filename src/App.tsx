@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import type { Product } from './shared/types';
-import { productService } from './shared/api/productService';
 import { Header } from './widgets/header/ui/Header';
 import { Hero } from './widgets/hero/ui/Hero';
 import { ProductGrid } from './widgets/product-grid/ui/ProductGrid';
+import { CartDrawer } from './widgets/cart/ui/CartDrawer';
+import { useCartStore } from './entities/cart/model/store';
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,9 +21,11 @@ export default function App() {
     loadInitialData();
   }, []);
 
-  // Función temporal vacía para evitar errores
+  // Conexión real con Zustand
+  const { addItem } = useCartStore();
+
   const handleAddToCart = (product: Product) => {
-    console.log('Agregando al carrito:', product.name);
+    addItem(product);
   };
 
   return (
@@ -38,6 +41,9 @@ export default function App() {
           onAddToCart={handleAddToCart} 
         />
       </main>
+      
+      {/* Drawer Overlay Panel */}
+      <CartDrawer />
       
       <footer className="bg-white border-t border-gray-200 py-8 text-center text-gray-500 text-sm mt-12">
         <p>© 2026 Bodega El Caserito. Todos los derechos reservados.</p>
