@@ -6,10 +6,10 @@ export function generateWhatsAppLink(items: CartItem[], total: number): string {
   if (items.length === 0) return '';
 
   const orderDetails = items.map((item) => {
-    return `• ${item.quantity}x ${item.name} (S/ ${(item.price * item.quantity).toFixed(2)})`;
+    return `   🔸 ${item.quantity}x *${item.name}* (S/ ${(item.price * item.quantity).toFixed(2)})`;
   }).join('\n');
 
-  const mensaje = `📦 Hola Bodega El Caserito, quiero hacer el siguiente pedido:\n\n${orderDetails}\n\n💳 Total a pagar: S/ ${total.toFixed(2)}\n\nPor favor, confirmen mi pedido y el medio de pago. ¡Gracias! ✨`;
+  const mensaje = `👋 ¡Hola *Bodega El Caserito*! 🏪\n\nDeseo realizar un pedido con los siguientes productos:\n\n*🛒 DETALLE DEL PEDIDO:*\n${orderDetails}\n\n───────────────\n💰 *Total a pagar:* S/ ${total.toFixed(2)}\n───────────────\n\n🛵 Quedo a la espera de su confirmación y los métodos de pago (Yape/Plin/Efectivo).\n\n¡Muchas gracias! ✨`;
 
   const textoCodificado = encodeURIComponent(mensaje);
   // Según reportes comunitarios (~2026), wa.me corrompe emojis en Desktop/Web aleatoriamente. 
