@@ -1,4 +1,4 @@
-import { Product } from '../types';
+import type { Product } from '../types';
 import { MOCK_PRODUCTS } from './mockData';
 
 // Constante para definir el "lag" simulado de la base de datos (1 segundo)

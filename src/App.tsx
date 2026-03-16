@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Product } from './shared/types';
+import type { Product } from './shared/types';
 import { productService } from './shared/api/productService';
 
 export default function App() {
