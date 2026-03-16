@@ -12,5 +12,7 @@ export function generateWhatsAppLink(items: CartItem[], total: number): string {
   const mensaje = `📦 Hola Bodega El Caserito, quiero hacer el siguiente pedido:\n\n${orderDetails}\n\n💳 Total a pagar: S/ ${total.toFixed(2)}\n\nPor favor, confirmen mi pedido y el medio de pago. ¡Gracias! ✨`;
 
   const textoCodificado = encodeURIComponent(mensaje);
-  return `https://wa.me/${STORE_PHONE_NUMBER}?text=${textoCodificado}`;
+  // Según reportes comunitarios (~2026), wa.me corrompe emojis en Desktop/Web aleatoriamente. 
+  // La API legacy de api.whatsapp.com renderiza correctamente los códigos UTF-8 de Emojis.
+  return `https://api.whatsapp.com/send?phone=${STORE_PHONE_NUMBER}&text=${textoCodificado}`;
 }
