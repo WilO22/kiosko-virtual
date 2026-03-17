@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import type { Product } from '@/shared/types';
 import { ProductCard } from '@/entities/product/ui/ProductCard';
-import { PackageSearch } from 'lucide-react';
+import { PackageSearch, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 interface ProductGridProps {
@@ -12,6 +13,8 @@ interface ProductGridProps {
 export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get('category') || 'Todos';
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const ITEMS_PER_PAGE = 8;
 
   // Extraer categorías únicas
   const categories = ['Todos', ...new Set(products.map(p => p.category))];
@@ -21,13 +24,37 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
     ? products 
     : products.filter(p => p.category === activeCategory);
 
+  // Cálculos de Paginación
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Efecto para resetear a la página 1 si nos salimos del rango (ej. al cambiar a una categoría con pocos items)
+  useEffect(() => {
+    if (currentPage > 1 && currentPage > totalPages && totalPages > 0) {
+      searchParams.set('page', '1');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [currentPage, totalPages, searchParams, setSearchParams]);
+
   const handleCategoryClick = (category: string) => {
     if (category === 'Todos') {
       searchParams.delete('category');
     } else {
       searchParams.set('category', category);
     }
+    // Ticket BC-20 Criterio: Resetear página al cambiar filtro
+    searchParams.set('page', '1');
     setSearchParams(searchParams);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      searchParams.set('page', newPage.toString());
+      setSearchParams(searchParams);
+      // Opcional: Auto-scroll arriba al cambiar de página
+      document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   if (isLoading) {
@@ -108,15 +135,50 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
           <p className="text-gray-500 max-w-md text-center">Intenta buscar en otra categoría o borra los filtros.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={onAddToCart}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {paginatedProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={onAddToCart}
+              />
+            ))}
+          </div>
+
+          {/* Renderizar Controles de Paginación solo si hay más de 1 página */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex items-center justify-center gap-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-full flex items-center justify-center transition-colors ${
+                  currentPage === 1 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-white text-gray-700 hover:bg-brand-orange hover:text-white border border-gray-200'
+                }`}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              
+              <span className="text-sm font-semibold text-gray-600 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
+                Página {currentPage} de {totalPages}
+              </span>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-full flex items-center justify-center transition-colors ${
+                  currentPage === totalPages 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-white text-gray-700 hover:bg-brand-orange hover:text-white border border-gray-200'
+                }`}
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
