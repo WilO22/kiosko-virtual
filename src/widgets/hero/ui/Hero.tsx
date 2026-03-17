@@ -1,7 +1,11 @@
 import { Button } from '@/shared/ui/Button';
-import { ArrowRight, ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 
 export function Hero() {
+  const scrollToCatalogo = () => {
+    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 to-white py-16 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -25,14 +29,10 @@ export function Hero() {
               En Bodega El Caserito encuentras abarrotes, bebidas y limpieza al mejor precio de tu barrio. Arma tu pedido web, te lo preparamos al instante y solo pasas a recogerlo sin hacer colas.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
-              <Button size="lg" className="w-full sm:w-auto group">
+            <div className="flex justify-center lg:justify-start w-full">
+              <Button size="lg" className="w-full sm:w-auto group" onClick={scrollToCatalogo}>
                 <ShoppingBag className="mr-2 h-5 w-5 group-hover:animate-bounce" />
                 Ver Catálogo
-              </Button>
-              <Button variant="secondary" size="lg" className="w-full sm:w-auto group">
-                ¿Cómo funciona?
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </div>
