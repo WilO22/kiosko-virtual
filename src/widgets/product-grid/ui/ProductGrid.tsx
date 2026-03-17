@@ -55,7 +55,7 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
         <h2 className="text-3xl font-heading font-bold text-gray-900">
           Catálogo <span className="text-brand-orange">Caserito</span>
         </h2>
-        <div className="text-sm font-medium text-gray-500 bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-100 flex items-center gap-2">
+        <div className="text-sm font-medium text-gray-500 bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-100 flex items-center gap-2 whitespace-nowrap">
           <span className="flex h-2 w-2 rounded-full bg-brand-green"></span>
           {products.length} productos
         </div>

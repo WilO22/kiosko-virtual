@@ -11,7 +11,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const { name, description, price, category, imageUrl } = product;
 
   return (
-    <div className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden h-full">
+    <div className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-brand-orange/30 transition-all duration-300 overflow-hidden h-full">
       {/* Imagen */}
       <div className="relative h-48 w-full overflow-hidden bg-gray-50 flex-shrink-0">
         <img
@@ -48,10 +48,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           <Button
             size="sm"
             onClick={() => onAddToCart?.(product)}
-            className="rounded-full h-10 w-10 p-0 sm:w-auto sm:px-4 flex items-center justify-center gap-2 group/btn"
+            className="rounded-full h-10 w-10 p-0 sm:w-auto sm:px-5 flex items-center justify-center gap-2 group/btn hover:scale-105 transition-transform"
           >
-            <ShoppingCart size={18} className="text-white" />
-            <span className="hidden sm:inline-block font-semibold">Agregar</span>
+            <ShoppingCart size={18} className="text-white group-hover/btn:animate-pulse" />
+            <span className="hidden sm:inline-block font-bold">Agregar</span>
           </Button>
         </div>
       </div>
