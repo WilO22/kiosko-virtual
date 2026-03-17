@@ -1,4 +1,5 @@
-import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { useState } from 'react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Banknote, Smartphone } from 'lucide-react';
 import { useCartStore } from '@/entities/cart/model/store';
 import { Button } from '@/shared/ui/Button';
 import { generateWhatsAppLink } from '@/features/checkout/api/whatsapp';
@@ -13,6 +14,9 @@ export function CartDrawer() {
     updateQuantity,
     clearCart
   } = useCartStore();
+
+  const [paymentMethod, setPaymentMethod] = useState<'yape' | 'cash'>('yape');
+  const [cashAmount, setCashAmount] = useState<string>('');
 
   if (!isOpen) return null;
 
@@ -96,17 +100,75 @@ export function CartDrawer() {
 
         {/* Footer Drawer */}
         {items.length > 0 && (
-          <div className="p-6 border-t border-gray-100 bg-gray-50">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-600 font-medium">Total Estimado</span>
-              <span className="text-2xl font-bold text-gray-900">S/ {totalPrice.toFixed(2)}</span>
+          <div className="p-6 border-t border-gray-100 bg-gray-50 space-y-5">
+            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+              <span className="text-gray-600 font-medium whitespace-nowrap">Total a Pagar</span>
+              <span className="text-2xl font-bold text-gray-900 whitespace-nowrap">S/ {totalPrice.toFixed(2)}</span>
             </div>
             
+            {/* Medios de Pago */}
+            <div className="space-y-3">
+              <span className="block text-sm font-semibold text-gray-700">Modo de pago al recoger:</span>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setPaymentMethod('yape')}
+                  className={`flex items-center justify-center gap-2 py-3 border rounded-xl transition-all ${
+                    paymentMethod === 'yape' 
+                      ? 'border-brand-green bg-brand-green/10 text-brand-green shadow-sm' 
+                      : 'border-gray-200 bg-white text-gray-500 hover:border-brand-green/50'
+                  }`}
+                >
+                  <Smartphone size={20} />
+                  <span className="text-sm font-bold">Yape / Plin</span>
+                </button>
+                <button
+                  onClick={() => setPaymentMethod('cash')}
+                  className={`flex items-center justify-center gap-2 py-3 border rounded-xl transition-all ${
+                    paymentMethod === 'cash' 
+                      ? 'border-brand-orange bg-brand-orange/10 text-brand-orange shadow-sm' 
+                      : 'border-gray-200 bg-white text-gray-500 hover:border-brand-orange/50'
+                  }`}
+                >
+                  <Banknote size={20} />
+                  <span className="text-sm font-bold">Efectivo</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Input de Vuelto si es Efectivo */}
+            {paymentMethod === 'cash' && (
+              <div className="space-y-2 animate-fade-in pb-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  ¿Con cuánto pagas? (Para alistar vuelto)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">S/</span>
+                  <input 
+                    type="number" 
+                    value={cashAmount}
+                    onChange={(e) => setCashAmount(e.target.value)}
+                    placeholder="Ej. 50"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-orange focus:border-brand-orange outline-none font-bold text-lg text-gray-900 shadow-inner bg-white"
+                  />
+                </div>
+                {cashAmount && parseFloat(cashAmount) >= totalPrice && (
+                  <p className="text-sm font-bold text-brand-green flex items-center gap-1 mt-2">
+                    ✅ Vuelto a entregar: S/ {(parseFloat(cashAmount) - totalPrice).toFixed(2)}
+                  </p>
+                )}
+                {cashAmount && parseFloat(cashAmount) < totalPrice && (
+                  <p className="text-xs font-bold text-red-500 mt-2">
+                    ⚠️ El monto debe cubrir el total de S/ {totalPrice.toFixed(2)}.
+                  </p>
+                )}
+              </div>
+            )}
+            
             <a 
-              href={generateWhatsAppLink(items, totalPrice)} 
+              href={generateWhatsAppLink(items, totalPrice, paymentMethod, cashAmount)} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="block w-full"
+              className={`block w-full ${paymentMethod === 'cash' && (!cashAmount || parseFloat(cashAmount) < totalPrice) ? 'opacity-50 pointer-events-none cursor-not-allowed' : ''}`}
             >
               <Button fullWidth variant="whatsapp" size="lg">
                 Enviar pedido por WhatsApp
@@ -115,7 +177,7 @@ export function CartDrawer() {
             
             <button 
               onClick={clearCart}
-              className="w-full mt-4 text-sm text-gray-500 hover:text-gray-900 underline pointer-events-auto"
+              className="w-full text-sm text-gray-500 hover:text-gray-900 underline pointer-events-auto"
             >
               Vaciar carrito
             </button>

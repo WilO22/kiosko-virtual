@@ -11,7 +11,7 @@ export function Hero() {
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-semibold mb-6">
               <span className="flex h-2 w-2 rounded-full bg-brand-orange animate-pulse"></span>
-              Abierto ahora - Delivery rápido
+              Abierto ahora - Recojo en Tienda rápido
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-gray-900 leading-tight mb-6">
@@ -22,7 +22,7 @@ export function Hero() {
             </h1>
             
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
-              En Bodega El Caserito encuentras abarrotes, bebidas y limpieza al mejor precio de tu barrio. Pidelo por nuestra web y te lo llevamos al instante.
+              En Bodega El Caserito encuentras abarrotes, bebidas y limpieza al mejor precio de tu barrio. Arma tu pedido web, te lo preparamos al instante y solo pasas a recogerlo sin hacer colas.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
