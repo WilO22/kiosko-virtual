@@ -25,12 +25,12 @@ export function Hero() {
               En Bodega El Caserito encuentras abarrotes, bebidas y limpieza al mejor precio de tu barrio. Pidelo por nuestra web y te lo llevamos al instante.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="group">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start w-full">
+              <Button size="lg" className="w-full sm:w-auto group">
                 <ShoppingBag className="mr-2 h-5 w-5 group-hover:animate-bounce" />
                 Ver Catálogo
               </Button>
-              <Button variant="secondary" size="lg" className="group">
+              <Button variant="secondary" size="lg" className="w-full sm:w-auto group">
                 ¿Cómo funciona?
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>

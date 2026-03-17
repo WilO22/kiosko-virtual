@@ -25,7 +25,7 @@ export function CartDrawer() {
       />
       
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl z-50 flex flex-col animate-slide-left">
+      <div className="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col h-[100dvh] animate-slide-left">
         {/* Header Drawer */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <div className="flex items-center gap-2">
