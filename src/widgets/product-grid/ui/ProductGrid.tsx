@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { Product } from '@/shared/types';
 import { ProductCard } from '@/entities/product/ui/ProductCard';
-import { PackageSearch, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PackageSearch, ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 interface ProductGridProps {
@@ -14,15 +14,24 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = searchParams.get('category') || 'Todos';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const searchQuery = searchParams.get('q') || '';
   const ITEMS_PER_PAGE = 8;
 
   // Extraer categorías únicas
   const categories = ['Todos', ...new Set(products.map(p => p.category))];
 
-  // Filtrar productos
-  const filteredProducts = activeCategory === 'Todos' 
+  // Filtrar por categoría
+  const categoryFiltered = activeCategory === 'Todos' 
     ? products 
     : products.filter(p => p.category === activeCategory);
+
+  // Filtrar por búsqueda (coincidencia parcial en nombre o descripción)
+  const filteredProducts = searchQuery
+    ? categoryFiltered.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : categoryFiltered;
 
   // Cálculos de Paginación
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -43,7 +52,23 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
     } else {
       searchParams.set('category', category);
     }
-    // Ticket BC-20 Criterio: Resetear página al cambiar filtro
+    // Resetear página al cambiar filtro
+    searchParams.set('page', '1');
+    setSearchParams(searchParams);
+  };
+
+  const handleSearchChange = (value: string) => {
+    if (value) {
+      searchParams.set('q', value);
+    } else {
+      searchParams.delete('q');
+    }
+    searchParams.set('page', '1');
+    setSearchParams(searchParams, { replace: true });
+  };
+
+  const clearSearch = () => {
+    searchParams.delete('q');
     searchParams.set('page', '1');
     setSearchParams(searchParams);
   };
@@ -107,6 +132,26 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
           <span className="flex h-2 w-2 rounded-full bg-brand-green"></span>
           {filteredProducts.length} productos
         </div>
+      </div>
+
+      {/* Barra de Búsqueda */}
+      <div className="relative mb-6">
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder="Buscar productos... (ej. arroz, galleta, leche)"
+          className="w-full pl-11 pr-10 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-orange/40 focus:border-brand-orange outline-none text-sm text-gray-800 placeholder:text-gray-400 shadow-sm transition-all"
+        />
+        {searchQuery && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       {/* Píldoras de Categorías (Filtros) */}
