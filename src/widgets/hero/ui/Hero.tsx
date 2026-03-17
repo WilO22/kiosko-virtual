@@ -19,9 +19,9 @@ export function Hero() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-gray-900 leading-tight mb-6">
-              Tus compras del día, <br className="hidden sm:block" />
+              Pide por aquí, <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-green">
-                sin salir de casa.
+                recoge sin colas.
               </span>
             </h1>
             
