@@ -10,16 +10,23 @@ import { useCartStore } from '@/entities/cart/model/store';
 export function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadInitialData() {
-      // Retrasamos unos milisegundos extra visualmente para apreciar el UI Skeletons 
-      // (productService ya tiene un delay de 1s para emular base de datos).
+  const loadProducts = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
       const data = await productService.getAllProducts();
       setProducts(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cargar los productos');
+    } finally {
       setIsLoading(false);
     }
-    loadInitialData();
+  };
+
+  useEffect(() => {
+    loadProducts();
   }, []);
 
   // Conexión real con Zustand
@@ -35,12 +42,30 @@ export function HomePage() {
       
       <main className="flex-grow">
         <Hero />
-        
-        <ProductGrid 
-          products={products} 
-          isLoading={isLoading} 
-          onAddToCart={handleAddToCart} 
-        />
+
+        {error ? (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-red-200">
+              <div className="bg-red-50 p-4 rounded-full mb-4 text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <h3 className="text-xl font-heading font-bold text-gray-900 mb-2">Algo salió mal</h3>
+              <p className="text-gray-500 max-w-md text-center mb-6">{error}</p>
+              <button
+                onClick={loadProducts}
+                className="px-6 py-2.5 bg-brand-orange text-white font-semibold rounded-full hover:bg-orange-600 transition-colors"
+              >
+                Intentar de nuevo
+              </button>
+            </div>
+          </section>
+        ) : (
+          <ProductGrid 
+            products={products} 
+            isLoading={isLoading} 
+            onAddToCart={handleAddToCart} 
+          />
+        )}
       </main>
       
       {/* Drawer Overlay Panel */}

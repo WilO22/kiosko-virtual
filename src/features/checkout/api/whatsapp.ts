@@ -1,6 +1,6 @@
 import type { CartItem } from '@/shared/types';
+import { config } from '@/shared/config';
 
-const STORE_PHONE_NUMBER = '51921401917'; // Reemplazar con el número real de la bodega
 
 export function generateWhatsAppLink(
   items: CartItem[], 
@@ -28,5 +28,5 @@ export function generateWhatsAppLink(
   const textoCodificado = encodeURIComponent(mensaje);
   // Según reportes comunitarios (~2026), wa.me corrompe emojis en Desktop/Web aleatoriamente. 
   // La API legacy de api.whatsapp.com renderiza correctamente los códigos UTF-8 de Emojis.
-  return `https://api.whatsapp.com/send?phone=${STORE_PHONE_NUMBER}&text=${textoCodificado}`;
+  return `https://api.whatsapp.com/send?phone=${config.whatsappNumber}&text=${textoCodificado}`;
 }

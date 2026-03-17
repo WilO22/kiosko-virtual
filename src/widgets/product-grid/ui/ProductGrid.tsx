@@ -3,6 +3,7 @@ import type { Product } from '@/shared/types';
 import { ProductCard } from '@/entities/product/ui/ProductCard';
 import { PackageSearch, ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { config } from '@/shared/config';
 
 interface ProductGridProps {
   products: Product[];
@@ -15,7 +16,7 @@ export function ProductGrid({ products, isLoading, onAddToCart }: ProductGridPro
   const activeCategory = searchParams.get('category') || 'Todos';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const searchQuery = searchParams.get('q') || '';
-  const ITEMS_PER_PAGE = 8;
+  const ITEMS_PER_PAGE = config.itemsPerPage;
 
   // Extraer categorías únicas
   const categories = ['Todos', ...new Set(products.map(p => p.category))];

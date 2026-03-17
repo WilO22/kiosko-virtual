@@ -1,42 +1,50 @@
 import type { Product } from '../types';
 import { MOCK_PRODUCTS } from './mockData';
+import { config, isApiMode } from '../config';
 
-// Constante para definir el "lag" simulado de la base de datos (1 segundo)
-const NETWORK_DELAY_MS = 1000;
-
+/**
+ * Servicio de productos.
+ * - Si `VITE_API_URL` tiene valor → usa fetch() contra la API real.
+ * - Si está vacío → usa MOCK_PRODUCTS (datos locales).
+ */
 export const productService = {
-  /**
-   * Obtiene todos los productos simulando una llamada asíncrona a un backend
-   */
   async getAllProducts(): Promise<Product[]> {
+    if (isApiMode()) {
+      const res = await fetch(`${config.apiUrl}/products`);
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      return res.json();
+    }
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(MOCK_PRODUCTS);
-      }, NETWORK_DELAY_MS);
+      setTimeout(() => resolve(MOCK_PRODUCTS), config.mockNetworkDelayMs);
     });
   },
 
-  /**
-   * Obtiene productos por categoría
-   */
-  async getProductsByCategory(category: Product['category']): Promise<Product[]> {
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    if (isApiMode()) {
+      const res = await fetch(`${config.apiUrl}/products?category=${encodeURIComponent(category)}`);
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      return res.json();
+    }
     return new Promise((resolve) => {
       setTimeout(() => {
         const filtered = MOCK_PRODUCTS.filter(p => p.category === category);
         resolve(filtered);
-      }, NETWORK_DELAY_MS);
+      }, config.mockNetworkDelayMs);
     });
   },
 
-  /**
-   * Simula obtener un producto específico por ID
-   */
   async getProductById(id: string): Promise<Product | undefined> {
+    if (isApiMode()) {
+      const res = await fetch(`${config.apiUrl}/products/${id}`);
+      if (res.status === 404) return undefined;
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      return res.json();
+    }
     return new Promise((resolve) => {
       setTimeout(() => {
         const product = MOCK_PRODUCTS.find(p => p.id === id);
         resolve(product);
-      }, NETWORK_DELAY_MS);
+      }, config.mockNetworkDelayMs);
     });
   }
 };

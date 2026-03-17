@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: 'bebidas' | 'abarrotes' | 'limpieza' | 'golosinas';
+  category: string;
   stock: number;
   imageUrl: string;
 }

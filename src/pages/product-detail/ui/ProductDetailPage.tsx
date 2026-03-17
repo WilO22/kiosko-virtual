@@ -15,16 +15,25 @@ export function ProductDetailPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
-  useEffect(() => {
-    async function loadProduct() {
-      if (!id) return;
+  const loadProduct = async () => {
+    if (!id) return;
+    try {
+      setIsLoading(true);
+      setError(null);
       const data = await productService.getProductById(id);
       setProduct(data ?? null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al cargar el producto');
+    } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadProduct();
   }, [id]);
 
@@ -55,6 +64,35 @@ export function ProductDetailPage() {
                 <div className="h-12 bg-gray-200 rounded w-40 mt-8"></div>
               </div>
             </div>
+          </div>
+        </main>
+        <CartDrawer />
+      </div>
+    );
+  }
+
+  // Error de API
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50/50">
+        <Header />
+        <main className="flex-grow flex flex-col items-center justify-center text-center px-4">
+          <div className="bg-red-50 p-4 rounded-full mb-4 text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">Algo salió mal</h2>
+          <p className="text-gray-500 mb-6">{error}</p>
+          <div className="flex gap-3">
+            <button
+              onClick={loadProduct}
+              className="px-6 py-2.5 bg-brand-orange text-white font-semibold rounded-full hover:bg-orange-600 transition-colors"
+            >
+              Intentar de nuevo
+            </button>
+            <Button variant="secondary" onClick={() => navigate('/')}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver al catálogo
+            </Button>
           </div>
         </main>
         <CartDrawer />
