@@ -7,7 +7,7 @@ export const config = {
   apiUrl: import.meta.env.VITE_API_URL || '',
 
   /** Número de WhatsApp de la bodega (con código de país, sin +). */
-  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '51921401917',
+  whatsappNumber: import.meta.env.VITE_WHATSAPP_NUMBER || '51910342822',
 
   /** Cantidad de productos por página en el catálogo. */
   itemsPerPage: 8,
